@@ -1,0 +1,14 @@
+# Put this file inside /etc/hotplug.d/dhcp
+# This will notify through a Telegram bot when new devices connect to your network
+
+TOKEN=""
+ID=""
+URL="https://api.telegram.org/bot$TOKEN/sendMessage"
+
+if [ "$ACTION" == "add" ]; then
+  msg="New device connected to the network `uci get system.@system[0].hostname`.`uci get dhcp.@dnsmasq[0].domain` $MACADDR $IPADDR $HOSTNAME"
+  echo `date` $msg >> /tmp/dhcpmasq.log
+
+  # Send text
+   curl -s -X POST $URL -d chat_id=$ID -d text="$msg"
+fi
